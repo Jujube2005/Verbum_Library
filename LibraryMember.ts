@@ -19,6 +19,10 @@ export class LibraryMember {
     return loan.item.borrow(this.name);
   }
 
+    getBorrowedItems() {
+    return this.borrowedItems;
+  }
+
   returnItem(itemId: string, returnDate: Date): string {
     const loan = this.borrowedItems.find(l => l.item["itemId"] === itemId);
     if (!loan) return "No such loan found.";
