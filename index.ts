@@ -4,6 +4,17 @@ import { Book, DVD } from "./LibraryItem";
 
 const library = new Library();
 
+// --- เพิ่มสมาชิกตัวอย่าง ---
+const alice = new LibraryMember("M001", "Alice");
+const bob = new LibraryMember("M002", "Bob");
+library.addMember(alice);
+library.addMember(bob);
+
+// --- เพิ่มสิ่งของตัวอย่าง ---
+library.addItem(new Book("Clean Code", "B001", "Robert C. Martin", 450));
+library.addItem(new DVD("Inception", "D001", 148, "Christopher Nolan"));
+library.addItem(new Magazine("National Geographic", "M001", 12, "August"));
+
 // สร้างสมาชิก
 const alice = new LibraryMember("M001", "Alice");
 const bob = new LibraryMember("M002", "Bob");
