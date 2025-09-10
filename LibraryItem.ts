@@ -39,7 +39,6 @@ export abstract class LibraryItem implements Borrowable {
 
   abstract getDetails(): string;
 }
-import { LibraryItem } from "./LibraryItem";
 
 export class Book extends LibraryItem {
   constructor(
