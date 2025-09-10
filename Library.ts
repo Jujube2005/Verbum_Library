@@ -1,4 +1,4 @@
-import { LibraryItem } from "./LibraryItem";
+import { LibraryItem, Book, DVD, Magazine } from "./LibraryItem";
 import { LibraryMember } from "./LibraryMember";
 import { Loan } from "./Loan";
 import { Reservation } from "./Reservation";
@@ -82,6 +82,48 @@ export class Library {
 }
 
   getLibrarySummary(): string {
+ patch-12
+  let summary = "=== Library Items ===\n";
+
+  const books = this.items.filter(i => i instanceof Book);
+  const dvds = this.items.filter(i => i instanceof DVD);
+  const magazines = this.items.filter(i => i instanceof Magazine);
+
+  summary += "\n--- Books ---\n";
+  if (books.length === 0) summary += "No books.\n";
+  else {
+    books.forEach(b => {
+      summary += `ID: ${b["itemId"]} | Title: ${b.title} | Status: ${b.isAvailable() ? "Available" : "Borrowed"} | ${b.getDetails()}\n`;
+    });
+  }
+
+  summary += "\n--- DVDs ---\n";
+  if (dvds.length === 0) summary += "No DVDs.\n";
+  else {
+    dvds.forEach(d => {
+      summary += `ID: ${d["itemId"]} | Title: ${d.title} | Status: ${d.isAvailable() ? "Available" : "Borrowed"} | ${d.getDetails()}\n`;
+    });
+  }
+
+  summary += "\n--- Magazines ---\n";
+  if (magazines.length === 0) summary += "No magazines.\n";
+  else {
+    magazines.forEach(m => {
+      summary += `ID: ${m["itemId"]} | Title: ${m.title} | Status: ${m.isAvailable() ? "Available" : "Borrowed"} | ${m.getDetails()}\n`;
+    });
+  }
+
+  summary += "\n=== Library Members ===\n";
+  if (this.members.length === 0) summary += "No members.\n";
+  else {
+    this.members.forEach(m => {
+      summary += `ID: ${m.getMemberId()} | Name: ${m.getMemberName()}\n`;
+    });
+  }
+
+  return summary;
+}
+=======
     let summary = "=== Library Items ===\n";
     if (this.items.length === 0) summary += "No items in library.\n";
     else {
@@ -100,3 +142,4 @@ export class Library {
 
     return summary;
   }
+main
