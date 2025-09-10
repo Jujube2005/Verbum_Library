@@ -112,34 +112,16 @@ export class Library {
       summary += `ID: ${m["itemId"]} | Title: ${m.title} | Status: ${m.isAvailable() ? "Available" : "Borrowed"} | ${m.getDetails()}\n`;
     });
   }
-
-  summary += "\n=== Library Members ===\n";
-  if (this.members.length === 0) summary += "No members.\n";
-  else {
-    this.members.forEach(m => {
-      summary += `ID: ${m.getMemberId()} | Name: ${m.getMemberName()}\n`;
-    });
+  return summary;
   }
 
-  return summary;
-}
-=======
-    let summary = "=== Library Items ===\n";
-    if (this.items.length === 0) summary += "No items in library.\n";
-    else {
-      this.items.forEach(i => {
-        summary += `ID: ${i["itemId"]}, Title: ${i.title}, Status: ${i.isAvailable() ? "Available" : "Borrowed"}, Details: ${i.getDetails()}\n`;
-      });
-    }
+  getMembersSummary(): string {
+    let summary = "=== Library Members ===\n";
+    if (this.members.length === 0) return summary + "No members.\n";
 
-    summary += "\n=== Library Members ===\n";
-    if (this.members.length === 0) summary += "No members.\n";
-    else {
-      this.members.forEach(m => {
-        summary += `ID: ${m.getMemberId()}, Name: ${m.getMemberName()}\n`;
-      });
-    }
-
+    this.members.forEach(m => {
+      summary += `ID: ${m.getMemberId()} | Name: ${m.getMemberName()} | Borrowed Items: ${m.getBorrowedItems().length}\n`;
+    });
     return summary;
   }
-main
+}
