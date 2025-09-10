@@ -1,8 +1,7 @@
-import { LibraryItem } from "../models/LibraryItem";
-import { LibraryMember } from "../models/LibraryMember";
-import { Loan } from "../models/Loan";
-import { Reservation } from "../models/Reservation";
-import { Book, Magazine, DVD } from "../models/LibraryItems";
+import { LibraryItem } from "./LibraryItem";
+import { LibraryMember } from "./LibraryMember";
+import { Loan } from "./Loan";
+import { Reservation } from "./Reservation";
 
 export class Library {
   private items: LibraryItem[] = [];
