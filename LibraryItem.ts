@@ -4,8 +4,6 @@ export interface Borrowable {
   isAvailable(): boolean;
 }
 
-import { Borrowable } from "../interfaces/Borrowable";
-
 export abstract class LibraryItem implements Borrowable {
   private _title: string;
   protected itemId: string;
