@@ -28,6 +28,13 @@ export class Loan {
   closeLoan(returnDate: Date): void {
     this.returnDate = returnDate;
     this.calculateFine();
+
+    if (fineAmount > 0) {
+    return `📌 Returned late! Fine: ${fineAmount} THB`; // <-- เพิ่มตรงนี้
+  } else {
+    return "📌 Returned successfully, no fine."; // <-- เพิ่มตรงนี้
+  }
+    
   }
 
   payFine(method: PaymentMethod): Payment | undefined {
