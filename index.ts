@@ -1,6 +1,6 @@
-import { Library } from "./services/Library";
-import { LibraryMember } from "./models/LibraryMember";
-import { Book, DVD } from "./models/LibraryItems";
+import { Library } from "./Library";
+import { LibraryMember} from "./LibraryMember";
+import { Book, DVD } from "./LibraryItem";
 
 const library = new Library();
 
