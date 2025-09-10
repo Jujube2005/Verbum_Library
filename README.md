@@ -1,1 +1,7 @@
-# Verbum_Library
+# กลุ่ม Verbum
+
+67162110078-5 โชติกา จักรไชย 4
+67162110443-8จันทร์ธิภา บุญทะจิตร 21
+
+AI Chat:
+https://chatgpt.com/share/68c0f2e6-4c28-8003-8339-e0b617d8ab1f
