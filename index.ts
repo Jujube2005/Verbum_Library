@@ -1,85 +1,41 @@
+import readline from "readline";
 import { Library } from "./Library";
-import { LibraryMember} from "./LibraryMember";
+import { LibraryMember } from "./LibraryMember";
 import { Book, DVD } from "./LibraryItem";
 
+// สร้าง library
 const library = new Library();
 
-// สร้างสมาชิก
-const alice = new LibraryMember("M001", "Alice");
-const bob = new LibraryMember("M002", "Bob");
+// สร้าง readline interface
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
 
-library.addMember(alice);
-library.addMember(bob);
+// ฟังก์ชันช่วยถาม user
+function askQuestion(query: string): Promise<string> {
+  return new Promise(resolve => rl.question(query, answer => resolve(answer)));
+}
 
-// สร้าง item
-const book1 = new Book("Clean Code", "B001", "Robert C. Martin", 450);
-const dvd1 = new DVD("Inception", "D001", 148, "Christopher Nolan");
+async function main() {
+  console.log("=== Welcome to the Library System ===");
 
-library.addItem(book1);
-library.addItem(dvd1);
+  while (true) {
+    console.log("\nOptions:");
+    console.log("1. Add Member");
+    console.log("2. Add Book");
+    console.log("3. Add DVD");
+    console.log("4. Borrow Item");
+    console.log("5. Return Item");
+    console.log("6. Reserve Item");
+    console.log("7. Show Library Summary");
+    console.log("0. Exit");
 
-const choice = await askQuestion("Choose an option: ");
+      default:
+        console.log("Invalid option. Try again.");
+    }
+  }
+}
 
-  switch (choice) {
-    case "1":
-      const memberName = await askQuestion("Enter member name: ");
-      const memberId = "M-" + Date.now();
-      library.addMember(new LibraryMember(memberId, memberName));
-      console.log(`Member added: ${memberName}, ID: ${memberId}`);
-      break;
-
-    case "2":
-      const bookTitle = await askQuestion("Enter book title: ");
-      const bookAuthor = await askQuestion("Enter author: ");
-      const pagesStr = await askQuestion("Enter number of pages: ");
-      const pages = parseInt(pagesStr);
-      const bookId = "B-" + Date.now();
-      library.addItem(new Book(bookTitle, bookId, bookAuthor, pages));
-      console.log(`Book added: ${bookTitle}, ID: ${bookId}`);
-      break;
-
-    case "3":
-      const dvdTitle = await askQuestion("Enter DVD title: ");
-      const director = await askQuestion("Enter director: ");
-      const durationStr = await askQuestion("Enter duration in minutes: ");
-      const duration = parseInt(durationStr);
-      const dvdId = "D-" + Date.now();
-      library.addItem(new DVD(dvdTitle, dvdId, duration, director));
-      console.log(`DVD added: ${dvdTitle}, ID: ${dvdId}`);
-      break;
-
-    case "4":
-      const borrowMemberId = await askQuestion("Enter member ID: ");
-      const borrowItemId = await askQuestion("Enter item ID: ");
-      console.log(library.borrowItem(borrowItemId, borrowMemberId));
-      break;
-
-    case "5":
-      const returnMemberId = await askQuestion("Enter member ID: ");
-      const returnItemId = await askQuestion("Enter item ID: ");
-      console.log(library.returnItem(returnItemId, returnMemberId));
-      break;
-      
-   case "6":
-      const reserveMemberId = await askQuestion("Enter member ID: ");
-      const reserveItemId = await askQuestion("Enter item ID: ");
-      console.log(library.reserveItem(reserveItemId, reserveMemberId));
-      break;
-
-    case "7":
-      console.log(library.getLibrarySummary());
-      break;
-
-    case "0":
-      console.log("Exiting...");
-      rl.close();
-      return;
-
-// ยืมหนังสือ
-console.log(library.borrowItem("B001", "M001")); // Alice borrowed "Clean Code"
-
-// จองหนังสือ
-console.log(library.reserveItem("B001", "M002")); // Bob reserved "Clean Code"
-
-// คืนหนังสือ
-console.log(library.returnItem("B001", "M001")); // Returned successfully (หรือมี fine)
+// เรียก main
+main();

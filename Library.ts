@@ -65,7 +65,24 @@ export class Library {
     return `${member.getMemberName()} reserved "${item.title}"`;
   }
 
+  checkItemStatus(itemId: string): string {
+  const item = this.findItemById(itemId);
+  if (!item) return "Item not found.";
+
+  // ตรวจสถานะยืม
+  const status = item.isAvailable() ? "Available" : "Borrowed";
+
+  // ตรวจว่ามีการจองหรือไม่
+  const reservation = this.reservations.find(
+    r => r.item["itemId"] === itemId && r.status === "Active"
+  );
+  const reserved = reservation ? `Reserved by ${reservation.member.getMemberName()}` : "";
+
+  return `Item: ${item.title}\nStatus: ${status}${reserved ? " | " + reserved : ""}`;
+}
+
   getLibrarySummary(): string {
+ patch-12
   let summary = "=== Library Items ===\n";
 
   const books = this.items.filter(i => i instanceof Book);
@@ -106,3 +123,23 @@ export class Library {
 
   return summary;
 }
+=======
+    let summary = "=== Library Items ===\n";
+    if (this.items.length === 0) summary += "No items in library.\n";
+    else {
+      this.items.forEach(i => {
+        summary += `ID: ${i["itemId"]}, Title: ${i.title}, Status: ${i.isAvailable() ? "Available" : "Borrowed"}, Details: ${i.getDetails()}\n`;
+      });
+    }
+
+    summary += "\n=== Library Members ===\n";
+    if (this.members.length === 0) summary += "No members.\n";
+    else {
+      this.members.forEach(m => {
+        summary += `ID: ${m.getMemberId()}, Name: ${m.getMemberName()}\n`;
+      });
+    }
+
+    return summary;
+  }
+main
