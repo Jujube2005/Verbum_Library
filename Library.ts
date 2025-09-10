@@ -65,6 +65,22 @@ export class Library {
     return `${member.getMemberName()} reserved "${item.title}"`;
   }
 
+  checkItemStatus(itemId: string): string {
+  const item = this.findItemById(itemId);
+  if (!item) return "Item not found.";
+
+  // ตรวจสถานะยืม
+  const status = item.isAvailable() ? "Available" : "Borrowed";
+
+  // ตรวจว่ามีการจองหรือไม่
+  const reservation = this.reservations.find(
+    r => r.item["itemId"] === itemId && r.status === "Active"
+  );
+  const reserved = reservation ? `Reserved by ${reservation.member.getMemberName()}` : "";
+
+  return `Item: ${item.title}\nStatus: ${status}${reserved ? " | " + reserved : ""}`;
+}
+
   getLibrarySummary(): string {
     let summary = "=== Library Items ===\n";
     if (this.items.length === 0) summary += "No items in library.\n";
