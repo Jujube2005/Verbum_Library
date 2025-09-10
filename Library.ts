@@ -66,8 +66,21 @@ export class Library {
   }
 
   getLibrarySummary(): string {
-    const itemsSummary = this.items.map(i => i.getDetails()).join("\n");
-    const membersSummary = this.members.map(m => m.getMemberName()).join(", ");
-    return `Library Items:\n${itemsSummary}\n\nMembers:\n${membersSummary}`;
+    let summary = "=== Library Items ===\n";
+    if (this.items.length === 0) summary += "No items in library.\n";
+    else {
+      this.items.forEach(i => {
+        summary += `ID: ${i["itemId"]}, Title: ${i.title}, Status: ${i.isAvailable() ? "Available" : "Borrowed"}, Details: ${i.getDetails()}\n`;
+      });
+    }
+
+    summary += "\n=== Library Members ===\n";
+    if (this.members.length === 0) summary += "No members.\n";
+    else {
+      this.members.forEach(m => {
+        summary += `ID: ${m.getMemberId()}, Name: ${m.getMemberName()}\n`;
+      });
+    }
+
+    return summary;
   }
-}
