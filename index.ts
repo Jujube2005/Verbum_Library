@@ -1,124 +1,189 @@
 import readline from "readline";
 import { Library } from "./Library";
 import { LibraryMember } from "./LibraryMember";
-import { Book, DVD } from "./LibraryItem";
+import { Book, DVD, Magazine } from "./LibraryItem";
 
-// สร้าง library
+
+
 const library = new Library();
 
-// สร้าง readline interface
+// ตัวอย่างสมาชิก
+const alice = new LibraryMember(`M ${Date.now}`, "Alice");
+const bob = new LibraryMember(`M ${Date.now}`, "Bob");
+library.addMember(alice);
+library.addMember(bob);
+
+// ตัวอย่าง items
+library.addItem(new Book("Clean Code", "B001", "Robert C. Martin", 450));
+library.addItem(new DVD("Inception", "D001", 148, "Christopher Nolan"));
+library.addItem(new Magazine("National Geographic", "M001", 12, "August"));
+
 const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
+    input: process.stdin,
+    output: process.stdout,
 });
 
-// ฟังก์ชันช่วยถาม user
 function askQuestion(query: string): Promise<string> {
-  return new Promise(resolve => rl.question(query, answer => resolve(answer)));
+    return new Promise(resolve => rl.question(query, ans => resolve(ans)));
 }
 
 async function main() {
-  console.log("=== Welcome to the Library System ===");
+    console.log("=== Welcome to the Library System ===");
 
-  while (true) {
-    console.log("\nOptions:");
-    console.log("1. Add Member");
-    console.log("2. Add Book");
-    console.log("3. Add DVD");
-    console.log("4. Borrow Item");
-    console.log("5. Return Item");
-    console.log("6. Reserve Item");
-    console.log("7. Show Library Summary");
-    console.log("8. Check Item Status");
-    console.log("9. Pay Fine");
-    console.log("0. Exit");
+    let exit = false;
 
-    switch (choice) {
-            case "1":
-                const memberName = await askQuestion("Enter member name: ");
-                const memberId = "M-" + Date.now();
-                library.addMember(new LibraryMember(memberId, memberName));
-                console.log(`Member added: ${memberName}, ID: ${memberId}`);
+    while (!exit) {
+        console.log("\n=== Main Menu ===");
+        console.log("[1] Login");
+        console.log("[2] Register");
+        console.log("[3] Admin");
+        console.log("[4] Exit");
+
+        const choice = await askQuestion("Select an option: ");
+
+        switch (choice) {
+            case "1": {
+                const memberId = await askQuestion("Enter your member ID: ");
+                const member = library.findMemberById(memberId);
+                if (!member) {
+                    console.log("Member not found. Please register first.");
+                    break;
+                }
+                await memberMenu(member);
                 break;
+            }
 
-            case "2":
-                const bookTitle = await askQuestion("Enter book title: ");
-                const bookAuthor = await askQuestion("Enter author: ");
-                const pagesStr = await askQuestion("Enter number of pages: ");
-                const pages = parseInt(pagesStr);
-                const bookId = "B-" + Date.now();
-                library.addItem(new Book(bookTitle, bookId, bookAuthor, pages));
-                console.log(`Book added: ${bookTitle}, ID: ${bookId}`);
+            case "2": {
+                const name = await askQuestion("Enter your name: ");
+                const id = "M-" + Date.now();
+                library.addMember(new LibraryMember(id, name));
+                console.log(`✅ Registered! Your member ID: ${id}`);
                 break;
+            }
 
             case "3":
-                const dvdTitle = await askQuestion("Enter DVD title: ");
-                const director = await askQuestion("Enter director: ");
-                const durationStr = await askQuestion("Enter duration in minutes: ");
-                const duration = parseInt(durationStr);
-                const dvdId = "D-" + Date.now();
-                library.addItem(new DVD(dvdTitle, dvdId, duration, director));
-                console.log(`DVD added: ${dvdTitle}, ID: ${dvdId}`);
+                await adminMenu();
                 break;
 
             case "4":
-                const borrowMemberId = await askQuestion("Enter member ID: ");
-                const borrowItemId = await askQuestion("Enter item ID: ");
-                console.log(library.borrowItem(borrowItemId, borrowMemberId));
-                break;
-
-            case "5":
-                const returnMemberId = await askQuestion("Enter member ID: ");
-                const returnItemId = await askQuestion("Enter item ID: ");
-                console.log(library.returnItem(returnItemId, returnMemberId));
-                break;
-
-            case "6":
-                const reserveMemberId = await askQuestion("Enter member ID: ");
-                const reserveItemId = await askQuestion("Enter item ID: ");
-                console.log(library.reserveItem(reserveItemId, reserveMemberId));
-                break;
-
-            case "7":
-                console.log(library.getLibrarySummary());
-                break;
-
-            case "8": {
-                const itemId = await askQuestion("Enter item ID: ");
-                console.log(library.checkItemStatus(itemId));
-                break;
-            }
-
-            case "9": {
-                const memberId = await askQuestion("Enter member ID: ");
-                const member = library.findMemberById(memberId);
-                if (!member) {
-                    console.log("Member not found.");
-                    break;
-                }
-
-                const itemId = await askQuestion("Enter item ID to pay fine for: ");
-                const loan = member["borrowedItems"].find(l => l.item["itemId"] === itemId);
-                if (!loan || loan.fine <= 0) {
-                    console.log("No fine to pay for this item.");
-                    break;
-                }
-
-                const methodChoice = await askQuestion("Payment method (Cash/CreditCard/QRCode): ");
-                const method = methodChoice as PaymentMethod;
-                const payment = loan.payFine(method);
-                if (payment) console.log(`✅ Fine paid: ${payment.amount} THB via ${payment.method}`);
-                else console.log("Error paying fine.");
-                break;
-            }
-
-            case "0":
-                console.log("Exiting...");
+                console.log("Exiting... 👋");
+                exit = true;
                 rl.close();
-                return;
+                break;
 
             default:
-                console.log("Invalid option. Try again.");
+                console.log("⚠️ Invalid option, please try again.");
+        }
+    }
+}
+
+// --- Member Menu ---
+async function memberMenu(member: LibraryMember) {
+    let back = false;
+    while (!back) {
+        console.log(`\n=== Member Menu (${member.getMemberName()}) ===`);
+        console.log("[1] Borrow Item");
+        console.log("[2] Return Item");
+        console.log("[3] Reserve Item");
+        console.log("[4] Show Full Library Details");
+        console.log("[5] View My Info");
+        console.log("[0] Back to Main Menu");
+
+        const choice = await askQuestion("Select an option: ");
+
+        switch (choice) {
+            case "1": {
+                const itemId = await askQuestion("Enter item ID: ");
+                if (member["isBlacklisted"]) {
+                    console.log("Cannot borrow: You are blacklisted.");
+                    break;
+                }
+                console.log(library.borrowItem(itemId, member.getMemberId()));
+                break;
+            }
+            case "2": {
+                const itemId = await askQuestion("Enter item ID: ");
+                console.log(member.returnItem(itemId, new Date()));
+                break;
+            }
+            case "3": {
+                const itemId = await askQuestion("Enter item ID: ");
+                console.log(library.reserveItem(itemId, member.getMemberId()));
+                break;
+            }
+            case "4": {
+                console.log(library.getLibrarySummary());
+                break;
+            }
+            case "5": {
+                console.log(`ID: ${member.getMemberId()}`);
+                console.log(`Name: ${member.getMemberName()}`);
+                console.log(`Blacklisted: ${member["isBlacklisted"] ? "Yes" : "No"}`);
+                console.log(`Borrowed Items: ${member.getBorrowedItems().length === 0
+                        ? "None"
+                        : member.getBorrowedItems().map(l => l.item.title).join(", ")
+                    }`);
+                break;
+            }
+            case "0":
+                back = true;
+                break;
+            default:
+                console.log("⚠️ Invalid option");
+        }
+    }
+}
+
+// --- Admin Menu ---
+async function adminMenu() {
+    let back = false;
+    while (!back) {
+        console.log("\n=== Admin Menu ===");
+        console.log("[1] Add Book");
+        console.log("[2] Add DVD");
+        console.log("[3] Add Magazine");
+        console.log("[4] Show Full Library Details");
+        console.log("[0] Back to Main Menu");
+
+        const choice = await askQuestion("Select an option: ");
+
+        switch (choice) {
+            case "1": {
+                const title = await askQuestion("Book title: ");
+                const author = await askQuestion("Author: ");
+                const pages = parseInt(await askQuestion("Pages: "));
+                const id = "B-" + Date.now();
+                library.addItem(new Book(title, id, author, pages));
+                console.log(`✅ Book added: ${title}, ID: ${id}`);
+                break;
+            }
+            case "2": {
+                const title = await askQuestion("DVD title: ");
+                const director = await askQuestion("Director: ");
+                const duration = parseInt(await askQuestion("Duration (mins): "));
+                const id = "D-" + Date.now();
+                library.addItem(new DVD(title, id, duration, director));
+                console.log(`✅ DVD added: ${title}, ID: ${id}`);
+                break;
+            }
+            case "3": {
+                const title = await askQuestion("Magazine title: ");
+                const issue = parseInt(await askQuestion("Issue number: "));
+                const month = await askQuestion("Month: ");
+                const id = "M-" + Date.now();
+                library.addItem(new Magazine(title, id, issue, month));
+                console.log(`✅ Magazine added: ${title}, ID: ${id}`);
+                break;
+            }
+            case "4":
+                console.log(library.getLibrarySummary());
+                console.log(library.getMembersSummary());
+                break;
+            case "0":
+                back = true;
+                break;
+            default:
+                console.log("⚠️ Invalid option");
         }
     }
 }
