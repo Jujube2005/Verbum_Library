@@ -21,8 +21,8 @@ export class Library {
     return this.items.find(i => i["itemId"] === itemId);
   }
 
-  findMemberById(memberId: string): LibraryMember | undefined {
-    return this.members.find(m => m.getMemberId() === memberId);
+  findItemByName(itemName: string): LibraryItem | undefined {
+    return this.items.find(i => i["itemName"] === itemName);
   }
 
   borrowItem(itemId: string, memberId: string): string {
