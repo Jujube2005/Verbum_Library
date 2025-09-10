@@ -41,3 +41,49 @@ export abstract class LibraryItem implements Borrowable {
 
   abstract getDetails(): string;
 }
+import { LibraryItem } from "./LibraryItem";
+
+export class Book extends LibraryItem {
+  constructor(
+    title: string,
+    itemId: string,
+    private author: string,
+    private pages: number
+  ) {
+    super(title, itemId);
+  }
+
+  getDetails(): string {
+    return `Book: ${this.title}, Author: ${this.author}, Pages: ${this.pages}`;
+  }
+}
+
+export class Magazine extends LibraryItem {
+  constructor(
+    title: string,
+    itemId: string,
+    private issue: number,
+    private month: string
+  ) {
+    super(title, itemId);
+  }
+
+  getDetails(): string {
+    return `Magazine: ${this.title}, Issue: ${this.issue}, Month: ${this.month}`;
+  }
+}
+
+export class DVD extends LibraryItem {
+  constructor(
+    title: string,
+    itemId: string,
+    private duration: number,
+    private director: string
+  ) {
+    super(title, itemId);
+  }
+
+  getDetails(): string {
+    return `DVD: ${this.title}, Duration: ${this.duration} mins, Director: ${this.director}`;
+  }
+}
