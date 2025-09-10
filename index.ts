@@ -29,6 +29,7 @@ async function main() {
     console.log("5. Return Item");
     console.log("6. Reserve Item");
     console.log("7. Show Library Summary");
+    console.log("8. Check Item Status");
     console.log("0. Exit");
 
       default:
